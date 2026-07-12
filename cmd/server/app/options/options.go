@@ -1,7 +1,7 @@
 package options
 
 import (
-	"github.com/robinlg/agentops-platform/internal/apiserver"
+	"github.com/robinlg/agentops-platform/internal"
 	genericoptions "github.com/robinlg/onexlib/pkg/options"
 )
 
@@ -20,7 +20,7 @@ type ServerOptions struct {
 // NewServerOptions 创建带有默认值的 ServerOptions 实例
 func NewServerOptions() *ServerOptions {
 	opts := &ServerOptions{
-		ServerMode:        apiserver.GinServerMode,
+		ServerMode:        internal.GinServerMode,
 		EnableMemoryStore: false,
 		PostgreSQLOptions: genericoptions.NewPostgreSQLOptions(),
 		HTTPOptions:       genericoptions.NewHTTPOptions(),
@@ -29,9 +29,9 @@ func NewServerOptions() *ServerOptions {
 	return opts
 }
 
-// Config 基于 ServerOptions 构建 apiserver.Config.
-func (o *ServerOptions) Config() (*apiserver.Config, error) {
-	return &apiserver.Config{
+// Config 基于 ServerOptions 构建 Config.
+func (o *ServerOptions) Config() (*internal.Config, error) {
+	return &internal.Config{
 		ServerMode:        o.ServerMode,
 		EnableMemoryStore: o.EnableMemoryStore,
 		PostgreSQLOptions: o.PostgreSQLOptions,

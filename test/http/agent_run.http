@@ -1,0 +1,23 @@
+### 变量声明（VSCode REST Client 使用；GoLand 会优先读 http-client.env.json）
+@baseUrl = http://127.0.0.1:38443
+@apiPrefix = /v1
+@resource = {{baseUrl}}{{apiPrefix}}/agent-runs
+# 如果不想依赖列表接口，可在此手动指定一个已有运行记录 id
+@id = 1
+
+
+### 1. 列表查询智能体运行记录
+GET {{resource}}?offset=0&limit=10
+Accept: application/json
+
+> {%
+    // 把列表第一条运行记录 id 存到全局变量，供 Get 接口复用
+    if (response.body && response.body.agent_runs && response.body.agent_runs.length > 0) {
+        client.global.set("agentRunId", response.body.agent_runs[0].id);
+    }
+%}
+
+
+### 2. 获取单个智能体运行记录
+GET {{resource}}/{{agentRunId}}
+Accept: application/json

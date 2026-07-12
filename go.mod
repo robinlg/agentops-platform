@@ -5,6 +5,7 @@ go 1.25.3
 require (
 	github.com/gin-gonic/gin v1.12.0
 	github.com/google/wire v0.7.0
+	github.com/jinzhu/copier v0.4.0
 	github.com/robinlg/onexlib v0.0.0-20260711091918-cfa4ca604a96
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/pflag v1.0.10
@@ -13,6 +14,7 @@ require (
 	go.uber.org/automaxprocs v1.6.0
 	go.uber.org/mock v0.6.0
 	go.uber.org/zap v1.27.0
+	google.golang.org/protobuf v1.36.11
 	gorm.io/driver/sqlite v1.6.0
 	gorm.io/gen v0.3.28
 	gorm.io/gorm v1.31.2
@@ -42,7 +44,6 @@ require (
 	github.com/jackc/pgservicefile v0.0.0-20231201235250-de7065d80cb9 // indirect
 	github.com/jackc/pgx/v5 v5.5.5 // indirect
 	github.com/jackc/puddle/v2 v2.2.1 // indirect
-	github.com/jinzhu/copier v0.4.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
@@ -77,7 +78,6 @@ require (
 	golang.org/x/tools v0.47.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250528174236-200df99c418a // indirect
 	google.golang.org/grpc v1.74.2 // indirect
-	google.golang.org/protobuf v1.36.11 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gorm.io/datatypes v1.2.4 // indirect
 	gorm.io/driver/mysql v1.5.7 // indirect

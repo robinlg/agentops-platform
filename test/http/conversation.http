@@ -1,0 +1,32 @@
+### 变量声明（VSCode REST Client 使用；GoLand 会优先读 http-client.env.json）
+@baseUrl = http://127.0.0.1:38443
+@apiPrefix = /v1
+@resource = {{baseUrl}}{{apiPrefix}}/conversations
+# 如果不想依赖其他接口，可在此手动指定一个已有会话 id
+@id = 1
+
+
+### 1. 列表查询会话
+GET {{resource}}?offset=0&limit=10
+Accept: application/json
+
+> {%
+    // 把列表第一条会话 id 存到全局变量，供后续接口复用
+    if (response.body && response.body.conversations && response.body.conversations.length > 0) {
+        client.global.set("conversationId", response.body.conversations[0].id);
+    }
+%}
+
+
+### 2. 查询指定会话的消息列表
+GET {{resource}}/{{conversationId}}/messages?offset=0&limit=20
+Accept: application/json
+
+
+### 3. 删除会话
+DELETE {{resource}}/{{conversationId}}
+
+
+### 4. 删除后再次列表校验
+GET {{resource}}?offset=0&limit=10
+Accept: application/json

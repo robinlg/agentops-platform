@@ -1,0 +1,44 @@
+// Chat API 定义
+syntax = "proto3";
+
+package v1;
+
+option go_package = "github.com/robinlg/agentops-platform/pkg/api/v1;v1";
+
+// CreateChatRequest 表示创建对话的请求
+// agent_id 从 URI 路径参数绑定：POST /v1/agents/{id}/chat
+message CreateChatRequest {
+  // 智能体ID（从 URI 绑定）
+  // @gotags: uri:"id"
+  int64 agent_id = 1;
+  // 会话ID（可选，不传则创建新会话）
+  optional int64 conversation_id = 2;
+  // 用户输入的消息
+  string message = 3;
+}
+
+// Usage token 使用量统计
+message Usage {
+  // 输入 token 数
+  int32 prompt_tokens = 1;
+  // 输出 token 数
+  int32 completion_tokens = 2;
+  // 总 token 数
+  int32 total_tokens = 3;
+}
+
+// CreateChatResponse 表示创建对话的响应
+message CreateChatResponse {
+  // 会话ID
+  int64 conversation_id = 1;
+  // 消息ID
+  int64 message_id = 2;
+  // 运行记录ID
+  int64 run_id = 3;
+  // 助手回复内容
+  string answer = 4;
+  // token 使用量
+  Usage usage = 5;
+  // 耗时（毫秒）
+  int64 latency_ms = 6;
+}

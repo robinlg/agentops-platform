@@ -61,7 +61,7 @@ go.test: ## 执行单元测试.
 	@$(GO) test -race -cover \
 		-coverprofile=$(OUTPUT_DIR)/coverage.out \
 		-timeout=10m -shuffle=on -short \
-		-v `go list ./...|egrep -v 'tools|vendor|third_party|pkg/api/apiserver/v1|internal/pkg/server'`
+		-v `go list ./...|egrep -v 'tools|vendor|third_party|pkg/api/v1|internal/pkg/server'`
 
 go.cover: go.test ## 执行单元测试，并校验覆盖率阈值.
 	@echo "===========> Running code coverage tests"

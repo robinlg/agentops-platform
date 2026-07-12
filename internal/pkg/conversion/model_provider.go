@@ -1,8 +1,8 @@
 package conversion
 
 import (
-	"github.com/robinlg/agentops-platform/internal/apiserver/model"
-	apiv1 "github.com/robinlg/agentops-platform/pkg/api/apiserver/v1"
+	"github.com/robinlg/agentops-platform/internal/model"
+	apiv1 "github.com/robinlg/agentops-platform/pkg/api/v1"
 	"github.com/robinlg/onexlib/pkg/core"
 )
 

@@ -1,0 +1,96 @@
+// Agent API 定义
+syntax = "proto3";
+
+package v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/robinlg/agentops-platform/pkg/api/v1;v1";
+
+// Agent 表示一个智能体资源
+message Agent {
+  // 主键 ID
+  int64 id = 1;
+  // 智能体名称
+  string name = 2;
+  // 智能体描述
+  optional string description = 3;
+  // 系统提示
+  optional string system_prompt = 4;
+  // 模型提供商ID
+  int64 model_provider_id = 5;
+  // 模型
+  optional string model = 6;
+  // 热度
+  optional double temperature = 7;
+  // 最大token
+  optional int32 max_tokens = 8;
+  // 创建时间
+  google.protobuf.Timestamp created_at = 9;
+  // 更新时间
+  google.protobuf.Timestamp updated_at = 10;
+}
+
+// CreateAgentRequest 表示创建智能体的请求
+message CreateAgentRequest {
+  string name = 1;
+  optional string description = 2;
+  optional string system_prompt = 3;
+  int64 model_provider_id = 4;
+  optional string model = 5;
+  optional double temperature = 6;
+  optional int32 max_tokens = 7;
+}
+
+// CreateAgentResponse 表示创建智能体的响应
+message CreateAgentResponse {
+  int64 id = 1;
+}
+
+// ListAgentRequest 表示查询智能体列表的请求
+message ListAgentRequest {
+  int64 offset = 1;
+  int64 limit = 2;
+}
+
+// ListAgentResponse 表示查询智能体列表的响应
+message ListAgentResponse {
+  int64 total_count = 1;
+  repeated Agent agents = 2;
+}
+
+// GetAgentRequest 表示查询单个智能体的请求
+message GetAgentRequest {
+  // @gotags: uri:"id"
+  int64 id = 1;
+}
+
+// GetAgentResponse 表示查询单个智能体的响应
+message GetAgentResponse {
+  Agent agent = 1;
+}
+
+// UpdateAgentRequest 表示更新智能体的请求
+message UpdateAgentRequest {
+  // @gotags: uri:"id"
+  int64 id = 1;
+  optional string name = 2;
+  optional string description = 3;
+  optional string system_prompt = 4;
+  optional int64 model_provider_id = 5;
+  optional string model = 6;
+  optional double temperature = 7;
+  optional int32 max_tokens = 8;
+}
+
+// UpdateAgentResponse 表示更新智能体的响应
+message UpdateAgentResponse {}
+
+// DeleteAgentRequest 表示删除智能体的请求
+message DeleteAgentRequest {
+  // @gotags: uri:"id"
+  int64 id = 1;
+}
+
+// DeleteAgentResponse 表示删除智能体的响应
+message DeleteAgentResponse {}

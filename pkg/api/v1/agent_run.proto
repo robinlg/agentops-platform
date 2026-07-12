@@ -1,0 +1,63 @@
+// AgentRun API 定义
+syntax = "proto3";
+
+package v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/robinlg/agentops-platform/pkg/api/v1;v1";
+
+// AgentRun 表示一次智能体运行记录资源
+message AgentRun {
+  // 主键 ID
+  int64 id = 1;
+  // 智能体ID
+  int64 agent_id = 2;
+  // 会话ID
+  int64 conversation_id = 3;
+  // 运行状态（pending/running/success/failed）
+  string status = 4;
+  // 输入内容
+  optional string input = 5;
+  // 输出内容
+  optional string output = 6;
+  // 使用的模型
+  optional string model = 7;
+  // 输入token数
+  optional int32 prompt_tokens = 8;
+  // 输出token数
+  optional int32 completion_tokens = 9;
+  // 总token数
+  optional int32 total_tokens = 10;
+  // 耗时（毫秒）
+  optional int64 latency_ms = 11;
+  // 错误信息
+  optional string error_message = 12;
+  // 开始时间
+  google.protobuf.Timestamp started_at = 13;
+  // 结束时间
+  google.protobuf.Timestamp finished_at = 14;
+}
+
+// ListAgentRunRequest 表示查询智能体运行记录列表的请求
+message ListAgentRunRequest {
+  int64 offset = 1;
+  int64 limit = 2;
+}
+
+// ListAgentRunResponse 表示查询智能体运行记录列表的响应
+message ListAgentRunResponse {
+  int64 total_count = 1;
+  repeated AgentRun agent_runs = 2;
+}
+
+// GetAgentRunRequest 表示查询单个智能体运行记录的请求
+message GetAgentRunRequest {
+  // @gotags: uri:"id"
+  int64 id = 1;
+}
+
+// GetAgentRunResponse 表示查询单个智能体运行记录的响应
+message GetAgentRunResponse {
+  AgentRun agent_run = 1;
+}

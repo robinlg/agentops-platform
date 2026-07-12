@@ -1,0 +1,71 @@
+// Conversation API 定义
+syntax = "proto3";
+
+package v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/robinlg/agentops-platform/pkg/api/v1;v1";
+
+// Conversation 表示一个会话资源
+message Conversation {
+  // 主键 ID
+  int64 id = 1;
+  // 智能体ID
+  int64 agent_id = 2;
+  // 会话标题
+  optional string title = 3;
+  // 创建时间
+  google.protobuf.Timestamp created_at = 4;
+  // 更新时间
+  google.protobuf.Timestamp updated_at = 5;
+}
+
+// Message 表示一条会话消息资源
+message Message {
+  // 主键 ID
+  int64 id = 1;
+  // 会话ID
+  int64 conversation_id = 2;
+  // 角色（user/assistant/system/tool）
+  string role = 3;
+  // 消息内容
+  string content = 4;
+  // 创建时间
+  google.protobuf.Timestamp created_at = 5;
+}
+
+// ListConversationRequest 表示查询会话列表的请求
+message ListConversationRequest {
+  int64 offset = 1;
+  int64 limit = 2;
+}
+
+// ListConversationResponse 表示查询会话列表的响应
+message ListConversationResponse {
+  int64 total_count = 1;
+  repeated Conversation conversations = 2;
+}
+
+// ListMessageRequest 表示查询会话消息列表的请求
+message ListMessageRequest {
+  // @gotags: uri:"id"
+  int64 conversation_id = 1;
+  int64 offset = 2;
+  int64 limit = 3;
+}
+
+// ListMessageResponse 表示查询会话消息列表的响应
+message ListMessageResponse {
+  int64 total_count = 1;
+  repeated Message messages = 2;
+}
+
+// DeleteConversationRequest 表示删除会话的请求
+message DeleteConversationRequest {
+  // @gotags: uri:"id"
+  int64 id = 1;
+}
+
+// DeleteConversationResponse 表示删除会话的响应
+message DeleteConversationResponse {}

@@ -1,0 +1,108 @@
+// ModelProvider API 定义
+syntax = "proto3"; // 告诉编译器此文件使用什么版本的语法
+
+package v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/robinlg/agentops-platform/pkg/api/v1;v1";
+
+// ModelProvider 表示一个模型提供商资源
+message ModelProvider {
+  // 主键 ID
+  int64 id = 1;
+  // 模型提供商名称
+  string name = 2;
+  // 模型提供商类型（如 openai、anthropic、azure 等）
+  string provider_type = 3;
+  // 模型提供商访问 URL
+  string base_url = 4;
+  // 模型提供商 API KEY（对外返回时建议由业务层脱敏）
+  string api_key = 5;
+  // 默认使用的模型名称
+  string default_model = 6;
+  // 创建时间
+  google.protobuf.Timestamp created_at = 7;
+  // 更新时间
+  google.protobuf.Timestamp updated_at = 8;
+}
+
+// CreateModelProviderRequest 表示创建模型提供商的请求
+message CreateModelProviderRequest {
+  // 模型提供商名称
+  string name = 1;
+  // 模型提供商类型
+  string provider_type = 2;
+  // 模型提供商访问 URL
+  string base_url = 3;
+  // 模型提供商 API KEY
+  string api_key = 4;
+  // 默认使用的模型名称
+  string default_model = 5;
+}
+
+// CreateModelProviderResponse 表示创建模型提供商的响应
+message CreateModelProviderResponse {
+  // 新创建模型提供商的 ID
+  int64 id = 1;
+}
+
+// ListModelProviderRequest 表示查询模型提供商列表的请求
+message ListModelProviderRequest {
+  // 偏移量，用于分页
+  int64 offset = 1;
+  // 每页数量限制
+  int64 limit = 2;
+}
+
+// ListModelProviderResponse 表示查询模型提供商列表的响应
+message ListModelProviderResponse {
+  // 满足条件的总条数
+  int64 total_count = 1;
+  // 当前页的模型提供商列表
+  repeated ModelProvider model_providers = 2;
+}
+
+// GetModelProviderRequest 表示查询单个模型提供商的请求
+message GetModelProviderRequest {
+  // 模型提供商 ID
+  // @gotags: uri:"id"
+  int64 id = 1;
+}
+
+// GetModelProviderResponse 表示查询单个模型提供商的响应
+message GetModelProviderResponse {
+  // 模型提供商详情
+  ModelProvider model_provider = 1;
+}
+
+// UpdateModelProviderRequest 表示更新模型提供商的请求
+// 使用 optional 字段，未设置的字段将不参与更新（部分更新语义）
+message UpdateModelProviderRequest {
+  // 待更新的模型提供商 ID
+  // @gotags: uri:"id"
+  int64 id = 1;
+  // 模型提供商名称
+  optional string name = 2;
+  // 模型提供商类型
+  optional string provider_type = 3;
+  // 模型提供商访问 URL
+  optional string base_url = 4;
+  // 模型提供商 API KEY
+  optional string api_key = 5;
+  // 默认使用的模型名称
+  optional string default_model = 6;
+}
+
+// UpdateModelProviderResponse 表示更新模型提供商的响应
+message UpdateModelProviderResponse {}
+
+// DeleteModelProviderRequest 表示删除模型提供商的请求
+message DeleteModelProviderRequest {
+  // 待删除的模型提供商 ID
+  // @gotags: uri:"id"
+  int64 id = 1;
+}
+
+// DeleteModelProviderResponse 表示删除模型提供商的响应
+message DeleteModelProviderResponse {}

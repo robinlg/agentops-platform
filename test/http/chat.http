@@ -1,0 +1,32 @@
+### 变量声明（VSCode REST Client 使用；GoLand 会优先读 http-client.env.json）
+@baseUrl = http://127.0.0.1:38443
+@apiPrefix = /v1
+# 智能体 id，通过 URI 路径传入
+@agentId = 1
+
+
+### 1. 发起对话（不带 conversation_id 时创建新会话）
+# @name createChat
+POST {{baseUrl}}{{apiPrefix}}/agents/{{agentId}}/chat
+Content-Type: application/json
+
+{
+  "message": "帮我解释一下 Kubernetes Controller 是什么"
+}
+
+> {%
+    // 把返回的 conversation_id 存到全局变量，供多轮对话复用
+    if (response.body && response.body.conversation_id) {
+        client.global.set("conversationId", response.body.conversation_id);
+    }
+%}
+
+
+### 2. 在同一会话内继续多轮对话（带 conversation_id）
+POST {{baseUrl}}{{apiPrefix}}/agents/{{agentId}}/chat
+Content-Type: application/json
+
+{
+  "conversation_id": {{conversationId}},
+  "message": "那它和 Operator 有什么区别？"
+}

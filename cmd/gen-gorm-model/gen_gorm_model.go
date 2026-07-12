@@ -28,7 +28,7 @@ type GenerateConfig struct {
 
 // 预定义的生成配置
 var generateConfigs = map[string]GenerateConfig{
-	"mb": {ModelPackagePath: "../../internal/apiserver/model", GenerateFunc: GenerateModels},
+		"mb": {ModelPackagePath: "../../internal/model", GenerateFunc: GenerateModels},
 }
 
 // 命令行参数.
@@ -156,5 +156,17 @@ func GenerateModels(g *gen.Generator) {
 	g.GenerateModelAs(
 		"agents",
 		"AgentM",
+	)
+	g.GenerateModelAs(
+		"conversations",
+		"ConversationM",
+	)
+	g.GenerateModelAs(
+		"messages",
+		"MessageM",
+	)
+	g.GenerateModelAs(
+		"agent_runs",
+		"AgentRunM",
 	)
 }
