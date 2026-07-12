@@ -1,0 +1,6 @@
+### 变量声明（VSCode REST Client 使用；GoLand 会优先读 http-client.env.json）
+@baseUrl = http://127.0.0.1:38443
+
+### 健康检查
+GET {{baseUrl}}/healthz
+Accept: application/json

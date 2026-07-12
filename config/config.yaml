@@ -1,0 +1,13 @@
+# 是否启用内存数据库（用于测试或开发环境）
+enable-memory-store: false
+
+# PostgreSQL 数据库配置
+postgresql:
+  addr: "127.0.0.1:5432"
+  username: "postgres"
+  password: "postgres123456"
+  database: "agentops"
+  max-idle-connections: 100
+  max-open-connections: 100
+  max-connection-life-time: 10s
+  log-level: 1
