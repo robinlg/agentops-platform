@@ -30,6 +30,7 @@ type IStore interface {
 	TX(ctx context.Context, fn func(ctx context.Context) error) error
 
 	ModelProvider() ModelProviderStore
+	Agent() AgentStore
 }
 
 // transactionKey 用于在 context.Context 中存储事务上下文的键.
@@ -83,4 +84,9 @@ func (store *datastore) TX(ctx context.Context, fn func(ctx context.Context) err
 // ModelProvider 返回一个实现了 ModelProviderStore 接口的实例
 func (store *datastore) ModelProvider() ModelProviderStore {
 	return newModelProviderStore(store)
+}
+
+// Agent 返回一个实现了 AgentStore 接口的实例
+func (store *datastore) Agent() AgentStore {
+	return newAgentStore(store)
 }

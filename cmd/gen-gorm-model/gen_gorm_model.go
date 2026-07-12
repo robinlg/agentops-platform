@@ -135,18 +135,13 @@ func createGenerator(packagePath string) *gen.Generator {
 // applyGeneratorOptions 设置自定义生成器选项
 func applyGeneratorOptions(g *gen.Generator) {
 	// 为特定字段自定义 GORM 标签
-	// 注意：必须先移除 default 键，再追加 autoCreateTime/autoUpdateTime。
-	// 因为 GORM 只要检测到 default 标签，就会认为该字段由 DB 默认值管理，
-	// autoCreateTime/autoUpdateTime 会被忽略，导致 Go 侧写入 time.Time 零值。
 	g.WithOpts(
 		gen.FieldGORMTag("created_at", func(tag field.GormTag) field.GormTag {
-			tag.Remove("default")
-			tag.Set("autoCreateTime")
+			tag.Set("default", "current_timestamp")
 			return tag
 		}),
 		gen.FieldGORMTag("updated_at", func(tag field.GormTag) field.GormTag {
-			tag.Remove("default")
-			tag.Set("autoUpdateTime")
+			tag.Set("default", "current_timestamp")
 			return tag
 		}),
 	)
@@ -157,5 +152,9 @@ func GenerateModels(g *gen.Generator) {
 	g.GenerateModelAs(
 		"model_providers",
 		"ModelProviderM",
+	)
+	g.GenerateModelAs(
+		"agents",
+		"AgentM",
 	)
 }

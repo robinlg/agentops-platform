@@ -57,6 +57,22 @@ func (b *modelProviderBiz) Update(ctx context.Context, rq *apiv1.UpdateModelProv
 		return nil, err
 	}
 
+	if rq.Name != nil {
+		modelProviderM.Name = *rq.Name
+	}
+	if rq.ProviderType != nil {
+		modelProviderM.ProviderType = *rq.ProviderType
+	}
+	if rq.BaseUrl != nil {
+		modelProviderM.BaseURL = *rq.BaseUrl
+	}
+	if rq.ApiKey != nil {
+		modelProviderM.APIKey = *rq.ApiKey
+	}
+	if rq.DefaultModel != nil {
+		modelProviderM.DefaultModel = *rq.DefaultModel
+	}
+
 	if err = b.store.ModelProvider().Update(ctx, modelProviderM); err != nil {
 		return nil, err
 	}

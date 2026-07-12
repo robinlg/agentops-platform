@@ -49,10 +49,20 @@ func (c *ServerConfig) InstallRESTAPI(engine *gin.Engine) {
 		modelProvider := v1.Group("/model-providers")
 		{
 			modelProvider.POST("", handler.CreateModelProvider)
+			modelProvider.GET("", handler.ListModelProviders)
+			modelProvider.GET("/:id", handler.GetModelProvider)
 			modelProvider.PUT("/:id", handler.UpdateModelProvider)
 			modelProvider.DELETE("/:id", handler.DeleteModelProvider)
-			modelProvider.GET("/:id", handler.GetModelProvider)
-			modelProvider.GET("", handler.ListModelProviders)
+		}
+
+		// 智能体相关路由
+		agents := v1.Group("/agents")
+		{
+			agents.POST("", handler.CreateAgent)
+			agents.GET("", handler.ListAgents)
+			agents.GET("/:id", handler.GetAgent)
+			agents.PUT("/:id", handler.UpdateAgent)
+			agents.DELETE("/:id", handler.DeleteAgent)
 		}
 	}
 }

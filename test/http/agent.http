@@ -1,0 +1,66 @@
+### 变量声明（VSCode REST Client 使用；GoLand 会优先读 http-client.env.json）
+@baseUrl = http://127.0.0.1:38443
+@apiPrefix = /v1
+@resource = {{baseUrl}}{{apiPrefix}}/agents
+# 如果不想依赖 Create 响应，可以在此手动指定一个已有 id
+@id = 1
+
+
+### 1. 创建 Agent
+# @name createAgent
+POST {{resource}}
+Content-Type: application/json
+
+{
+  "name": "my-assistant",
+  "description": "一个通用的AI助手",
+  "system_prompt": "你是一个有用的AI助手，请尽可能地帮助用户。",
+  "model_provider_id": 1,
+  "model": "gpt-4o-mini",
+  "temperature": 0.7,
+  "max_tokens": 2048
+}
+
+> {%
+    // 把 create 响应里的 id 存到全局变量，供后续 Get/Update/Delete 复用
+    // GoLand 语法
+    if (response.body && response.body.id) {
+        client.global.set("agentId", response.body.id);
+    }
+%}
+
+
+### 2. 列表查询 Agent
+GET {{resource}}?offset=0&limit=10
+Accept: application/json
+
+
+### 3. 获取单个 Agent
+# 使用第 1 步创建返回的 id；如未跑第 1 步，可改成上方的 {{id}}
+GET {{resource}}/{{agentId}}
+Accept: application/json
+
+
+### 4. 更新 Agent（部分更新，字段均为 optional）
+PUT {{resource}}/{{agentId}}
+Content-Type: application/json
+
+{
+  "name": "my-assistant-updated",
+  "temperature": 0.9,
+  "max_tokens": 4096
+}
+
+
+### 5. 更新后再次 Get 校验
+GET {{resource}}/{{agentId}}
+Accept: application/json
+
+
+### 6. 删除 Agent
+DELETE {{resource}}/{{agentId}}
+
+
+### 7. 删除后再次列表校验
+GET {{resource}}?offset=0&limit=10
+Accept: application/json

@@ -2,6 +2,7 @@ package biz
 
 import (
 	"github.com/google/wire"
+	agentv1 "github.com/robinlg/agentops-platform/internal/apiserver/biz/v1/agent"
 	modelproviderv1 "github.com/robinlg/agentops-platform/internal/apiserver/biz/v1/model-provider"
 	"github.com/robinlg/agentops-platform/internal/apiserver/store"
 )
@@ -18,6 +19,8 @@ var ProviderSet = wire.NewSet(NewBiz, wire.Bind(new(IBiz), new(*biz)))
 type IBiz interface {
 	// ModelProviderV1 模型提供商业务接口
 	ModelProviderV1() modelproviderv1.ModelProviderBiz
+	// AgentV1 智能体业务接口
+	AgentV1() agentv1.AgentBiz
 }
 
 // biz 是 IBiz 的一个具体实现
@@ -36,4 +39,9 @@ func NewBiz(store store.IStore) *biz {
 // ModelProviderV1 返回一个实现了 ModelProviderBiz 接口的实例
 func (b *biz) ModelProviderV1() modelproviderv1.ModelProviderBiz {
 	return modelproviderv1.New(b.store)
+}
+
+// AgentV1 返回一个实现了 AgentBiz 接口的实例
+func (b *biz) AgentV1() agentv1.AgentBiz {
+	return agentv1.New(b.store)
 }

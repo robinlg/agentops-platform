@@ -13,13 +13,13 @@ const TableNameModelProviderM = "model_providers"
 // ModelProviderM mapped from table <model_providers>
 type ModelProviderM struct {
 	ID           int64     `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
-	Name         string    `gorm:"column:name;not null;comment:模型提供商名称" json:"name"`                         // 模型提供商名称
-	ProviderType string    `gorm:"column:provider_type;not null;comment:模型提供商类型" json:"provider_type"`       // 模型提供商类型
-	BaseURL      string    `gorm:"column:base_url;not null;comment:模型提供商URL" json:"base_url"`                // 模型提供商URL
-	APIKey       string    `gorm:"column:api_key;not null;comment:模型提供商API KEY" json:"api_key"`              // 模型提供商API KEY
-	DefaultModel string    `gorm:"column:default_model;not null;comment:默认模型" json:"default_model"`          // 默认模型
-	CreatedAt    time.Time `gorm:"column:created_at;not null;autoCreateTime;comment:创建时间" json:"created_at"` // 创建时间
-	UpdatedAt    time.Time `gorm:"column:updated_at;not null;autoUpdateTime;comment:更新时间" json:"updated_at"` // 更新时间
+	Name         string    `gorm:"column:name;not null;comment:模型提供商名称" json:"name"`                                    // 模型提供商名称
+	ProviderType string    `gorm:"column:provider_type;not null;comment:模型提供商类型" json:"provider_type"`                  // 模型提供商类型
+	BaseURL      string    `gorm:"column:base_url;not null;comment:模型提供商URL" json:"base_url"`                           // 模型提供商URL
+	APIKey       string    `gorm:"column:api_key;not null;comment:模型提供商API KEY" json:"api_key"`                         // 模型提供商API KEY
+	DefaultModel string    `gorm:"column:default_model;not null;comment:默认模型" json:"default_model"`                     // 默认模型
+	CreatedAt    time.Time `gorm:"column:created_at;not null;default:current_timestamp;comment:创建时间" json:"created_at"` // 创建时间
+	UpdatedAt    time.Time `gorm:"column:updated_at;not null;default:current_timestamp;comment:更新时间" json:"updated_at"` // 更新时间
 }
 
 // TableName ModelProviderM's table name
