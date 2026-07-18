@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/robinlg/agentops-platform/internal/pkg/conversion"
+	"github.com/robinlg/agentops-platform/internal/pkg/log"
 	"github.com/robinlg/agentops-platform/internal/store"
 	apiv1 "github.com/robinlg/agentops-platform/pkg/api/v1"
 	"github.com/robinlg/onexlib/pkg/store/where"
@@ -69,9 +70,28 @@ func (b *conversationBiz) ListMessages(ctx context.Context, rq *apiv1.ListMessag
 	return &apiv1.ListMessageResponse{TotalCount: count, Messages: messages}, nil
 }
 
-// Delete 实现 ConversationBiz 接口中的 Delete 方法
+// Delete 实现 ConversationBiz 接口中的 Delete 方法。
+// 通过事务保证原子性：先清理该会话下的消息与运行记录，再删除会话本身，避免产生孤儿数据。
 func (b *conversationBiz) Delete(ctx context.Context, rq *apiv1.DeleteConversationRequest) (*apiv1.DeleteConversationResponse, error) {
-	if err := b.store.Conversation().Delete(ctx, where.F("id", rq.GetId())); err != nil {
+	err := b.store.TX(ctx, func(ctx context.Context) error {
+		// 删除会话下的所有消息
+		if err := b.store.Message().Delete(ctx, where.F("conversation_id", rq.GetId())); err != nil {
+			log.Errorw("Failed to delete messages of conversation", "conversation_id", rq.GetId(), "err", err)
+			return err
+		}
+		// 删除会话下的所有智能体运行记录
+		if err := b.store.AgentRun().Delete(ctx, where.F("conversation_id", rq.GetId())); err != nil {
+			log.Errorw("Failed to delete agent runs of conversation", "conversation_id", rq.GetId(), "err", err)
+			return err
+		}
+		// 删除会话本身
+		if err := b.store.Conversation().Delete(ctx, where.F("id", rq.GetId())); err != nil {
+			log.Errorw("Failed to delete conversation", "conversation_id", rq.GetId(), "err", err)
+			return err
+		}
+		return nil
+	})
+	if err != nil {
 		return nil, err
 	}
 

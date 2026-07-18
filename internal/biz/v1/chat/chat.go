@@ -149,14 +149,41 @@ func (b *chatBiz) loadChatContext(ctx context.Context, rq *apiv1.CreateChatReque
 		return nil, err
 	}
 
-	// 根据智能体 ID 和会话 ID 查询会话信息，确保该会话属于当前智能体
-	conversationM, err := b.store.Conversation().Get(ctx, where.F("agent_id", agentM.ID, "id", rq.GetConversationId()))
+	// 根据智能体 ID 和会话 ID 查询会话信息，确保该会话属于当前智能体；
+	// 若请求未指定 conversation_id，则为该智能体新建一个会话。
+	conversationM, err := b.getOrCreateConversation(ctx, agentM, rq)
 	if err != nil {
-		log.Errorw("Failed to get conversation", "agent_id", agentM.ID, "conversation_id", rq.GetConversationId(), "err", err)
 		return nil, err
 	}
 
 	return &chatContext{agent: agentM, modelProvider: modelProviderM, conversation: conversationM}, nil
+}
+
+// getOrCreateConversation 根据请求获取或新建会话：
+//   - 若请求携带 conversation_id，则按 (agent_id, id) 查询已存在的会话；
+//   - 若未携带，则以该智能体新建一个会话（Title 使用用户首条消息的前若干字符）。
+func (b *chatBiz) getOrCreateConversation(ctx context.Context, agentM *model.AgentM, rq *apiv1.CreateChatRequest) (*model.ConversationM, error) {
+	// 请求携带 conversation_id：按 (agent_id, id) 查询，确保会话属于该智能体
+	if rq.ConversationId != nil {
+		conversationM, err := b.store.Conversation().Get(ctx, where.F("agent_id", agentM.ID, "id", rq.GetConversationId()))
+		if err != nil {
+			log.Errorw("Failed to get conversation", "agent_id", agentM.ID, "conversation_id", rq.GetConversationId(), "err", err)
+			return nil, err
+		}
+		return conversationM, nil
+	}
+
+	// 未携带 conversation_id：为该智能体新建一个会话，Title 取用户首条消息的前若干字符
+	title := buildConversationTitle(rq.GetMessage())
+	conversationM := &model.ConversationM{
+		AgentID: agentM.ID,
+		Title:   &title,
+	}
+	if err := b.store.Conversation().Create(ctx, conversationM); err != nil {
+		log.Errorw("Failed to create conversation", "agent_id", agentM.ID, "err", err)
+		return nil, err
+	}
+	return conversationM, nil
 }
 
 // buildLLMMessages 拉取指定会话最近的历史消息，并借助 PromptBuilder 构建
@@ -204,4 +231,17 @@ func (b *chatBiz) markAgentRunFailed(ctx context.Context, ag *model.AgentRunM) {
 	if err := b.store.AgentRun().Update(ctx, ag); err != nil {
 		log.Errorw("Failed to update agent run status to failed", "agent_run_id", ag.ID, "err", err)
 	}
+}
+
+// conversationTitleMaxRunes 新建会话时自动生成标题的最大字符数（按 rune 计，避免多字节字符被截半）
+const conversationTitleMaxRunes = 30
+
+// buildConversationTitle 使用用户首条消息生成新建会话的默认标题：
+// 截取前 conversationTitleMaxRunes 个字符，超出部分用 "..." 表示。
+func buildConversationTitle(message string) string {
+	runes := []rune(message)
+	if len(runes) <= conversationTitleMaxRunes {
+		return message
+	}
+	return string(runes[:conversationTitleMaxRunes]) + "..."
 }
